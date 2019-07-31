@@ -108,7 +108,7 @@ func AcceptanceTest(t *testing.T, ctx context.Context, store eh.EventStore) []eh
 	savedEvents = append(savedEvents, event7)
 
 	t.Log("load events for non-existing aggregate")
-	events, err := store.Load(ctx, uuid.New())
+	events, err := store.Load(ctx, uuid.New().String())
 	if err != nil {
 		t.Error("there should be no error:", err)
 	}
@@ -182,7 +182,7 @@ func MaintainerAcceptanceTest(t *testing.T, ctx context.Context, store eh.EventS
 
 	t.Log("replace event, no aggregate")
 	eventWithoutAggregate := eh.NewEventForAggregate(mocks.EventType, &mocks.EventData{Content: "event"},
-		timestamp, mocks.AggregateType, uuid.New(), 1)
+		timestamp, mocks.AggregateType, uuid.New().String(), 1)
 	if err := store.Replace(ctx, eventWithoutAggregate); err != eh.ErrAggregateNotFound {
 		t.Error("there should be an aggregate not found error:", err)
 	}
