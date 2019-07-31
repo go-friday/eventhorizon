@@ -47,7 +47,7 @@ func AcceptanceTest(t *testing.T, ctx context.Context, store eh.EventStore) []eh
 	}
 
 	t.Log("save event, version 1")
-	id, _ := uuid.Parse("c1138e5f-f6fb-4dd0-8e79-255c6c8d3756")
+	id := "c1138e5f-f6fb-4dd0-8e79-255c6c8d3756"
 	timestamp := time.Date(2009, time.November, 10, 23, 0, 0, 0, time.UTC)
 	event1 := eh.NewEventForAggregate(mocks.EventType, &mocks.EventData{Content: "event1"},
 		timestamp, mocks.AggregateType, id, 1)
@@ -98,7 +98,7 @@ func AcceptanceTest(t *testing.T, ctx context.Context, store eh.EventStore) []eh
 	savedEvents = append(savedEvents, event4, event5, event6)
 
 	t.Log("save event for another aggregate")
-	id2, _ := uuid.Parse("c1138e5e-f6fb-4dd0-8e79-255c6c8d3756")
+	id2 := "c1138e5e-f6fb-4dd0-8e79-255c6c8d3756"
 	event7 := eh.NewEventForAggregate(mocks.EventType, &mocks.EventData{Content: "event7"},
 		timestamp, mocks.AggregateType, id2, 1)
 	err = store.Save(ctx, []eh.Event{event7}, 0)
@@ -108,7 +108,7 @@ func AcceptanceTest(t *testing.T, ctx context.Context, store eh.EventStore) []eh
 	savedEvents = append(savedEvents, event7)
 
 	t.Log("load events for non-existing aggregate")
-	events, err := store.Load(ctx, uuid.New())
+	events, err := store.Load(ctx, uuid.New().String())
 	if err != nil {
 		t.Error("there should be no error:", err)
 	}
@@ -168,7 +168,7 @@ func MaintainerAcceptanceTest(t *testing.T, ctx context.Context, store eh.EventS
 	ctx = context.WithValue(ctx, "testkey", "testval")
 
 	t.Log("save some events")
-	id, _ := uuid.Parse("c1138e5f-f6fb-4dd0-8e79-255c6c8d3757")
+	id := "c1138e5f-f6fb-4dd0-8e79-255c6c8d3757"
 	timestamp := time.Date(2009, time.November, 10, 23, 0, 0, 0, time.UTC)
 	event1 := eh.NewEventForAggregate(mocks.EventType, &mocks.EventData{Content: "event1"},
 		timestamp, mocks.AggregateType, id, 1)
@@ -182,7 +182,7 @@ func MaintainerAcceptanceTest(t *testing.T, ctx context.Context, store eh.EventS
 
 	t.Log("replace event, no aggregate")
 	eventWithoutAggregate := eh.NewEventForAggregate(mocks.EventType, &mocks.EventData{Content: "event"},
-		timestamp, mocks.AggregateType, uuid.New(), 1)
+		timestamp, mocks.AggregateType, uuid.New().String(), 1)
 	if err := store.Replace(ctx, eventWithoutAggregate); err != eh.ErrAggregateNotFound {
 		t.Error("there should be an aggregate not found error:", err)
 	}
@@ -220,13 +220,13 @@ func MaintainerAcceptanceTest(t *testing.T, ctx context.Context, store eh.EventS
 
 	t.Log("save events of the old type")
 	oldEventType := eh.EventType("old_event_type")
-	id1 := uuid.New()
+	id1 := uuid.New().String()
 	oldEvent1 := eh.NewEventForAggregate(oldEventType, nil, timestamp,
 		mocks.AggregateType, id1, 1)
 	if err := store.Save(ctx, []eh.Event{oldEvent1}, 0); err != nil {
 		t.Error("there should be no error:", err)
 	}
-	id2 := uuid.New()
+	id2 := uuid.New().String()
 	oldEvent2 := eh.NewEventForAggregate(oldEventType, nil, timestamp,
 		mocks.AggregateType, id2, 1)
 	if err := store.Save(ctx, []eh.Event{oldEvent2}, 0); err != nil {
@@ -269,7 +269,7 @@ func eventsToString(events []eh.Event) string {
 	for i, e := range events {
 		parts[i] = string(e.AggregateType()) +
 			":" + string(e.EventType()) +
-			" (" + e.AggregateID().String() + ")"
+			" (" + e.AggregateID() + ")"
 	}
 	return strings.Join(parts, ", ")
 }

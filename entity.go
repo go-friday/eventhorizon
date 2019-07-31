@@ -15,7 +15,11 @@
 // Package eventhorizon is a CQRS/ES toolkit.
 package eventhorizon
 
-import "github.com/google/uuid"
+// ID is identify of an Entity
+//
+// Data type should be in type of string.
+// For example, Netflix use "S1:C1" as ID for entity, meaning "Session 1 - Chapter 1"
+type ID = string
 
 // Entity is an item which is identified by an ID.
 //
@@ -26,5 +30,16 @@ import "github.com/google/uuid"
 // equivalent in all their attributes, but will still be distinct."
 type Entity interface {
 	// EntityID returns the ID of the entity.
-	EntityID() uuid.UUID
+	EntityID() ID
+}
+
+// NilID is pre-defined nil value for ID
+// when you need to returns from function.
+const NilID ID = ""
+
+// IsNilID check a ID is nil or not.
+//
+// ID is an empty string or UUID format with all zeros.
+func IsNilID(id ID) bool {
+	return id == NilID || id == "00000000-0000-0000-0000-000000000000"
 }
