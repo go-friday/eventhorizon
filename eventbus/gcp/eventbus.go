@@ -145,7 +145,7 @@ func (b *EventBus) subscription(m eh.EventMatcher, h eh.EventHandler, observer b
 
 	id := string(h.HandlerType())
 	if observer { // Generate unique ID for each observer.
-		id = fmt.Sprintf("%s-%s", id, uuid.New())
+		id = fmt.Sprintf("%s-%s", id, uuid.New().String())
 	}
 
 	ctx := context.Background()
@@ -278,12 +278,8 @@ func (e event) AggregateType() eh.AggregateType {
 }
 
 // AggrgateID implements the AggrgateID method of the eventhorizon.Event interface.
-func (e event) AggregateID() uuid.UUID {
-	id, err := uuid.Parse(e.evt.AggregateID)
-	if err != nil {
-		return uuid.Nil
-	}
-	return id
+func (e event) AggregateID() eh.ID {
+	return e.evt.AggregateID
 }
 
 // Version implements the Version method of the eventhorizon.Event interface.

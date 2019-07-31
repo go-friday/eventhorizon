@@ -24,7 +24,7 @@ import (
 )
 
 func TestModelJSON(t *testing.T) {
-	id := uuid.New()
+	id := uuid.New().String()
 	now := time.Now()
 
 	// Don't use keys for init, we want to get compiler warnings if we haven't
